@@ -42,7 +42,7 @@ def start_screen():
                   "только по траве,",
                   "на коробки залезать нельзя"]
     end_text = [
-        "Введите карту игры через",
+        "Введите имя файла через",
         "стандартный поток ввода"
     ]
 
@@ -204,8 +204,9 @@ class Level:
 
 if __name__ == "__main__":
     start_screen()
-    with open("map.txt", mode="w", encoding="utf-8") as file:
-        for line in sys.stdin:
-            file.write(line)
-    level = Level("map.txt")
+    try:
+        level = Level(input())
+    except Exception:
+        print("НЕТ ТАКОГО ФАЙЛА")
+        terminate()
     level.run()
