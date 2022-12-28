@@ -41,6 +41,10 @@ def start_screen():
                   "Перемещать Mario можно",
                   "только по траве,",
                   "на коробки залезать нельзя"]
+    end_text = [
+        "Введите карту игры через",
+        "стандартный поток ввода"
+    ]
 
     screen.fill(pygame.Color("white"))
     fon = pygame.transform.scale(load_image('fon.jpg'), (WIDTH, HEIGHT))
@@ -62,6 +66,18 @@ def start_screen():
                 terminate()
             elif event.type == pygame.KEYDOWN or \
                     event.type == pygame.MOUSEBUTTONDOWN:
+                screen.fill((0, 0, 0))
+                font = pygame.font.Font(None, 40)
+                text_coord = 150
+                for line in end_text:
+                    string_rendered = font.render(line, 1, pygame.Color('white'))
+                    intro_rect = string_rendered.get_rect()
+                    text_coord += 50
+                    intro_rect.top = text_coord
+                    intro_rect.x = 55
+                    text_coord += intro_rect.height
+                    screen.blit(string_rendered, intro_rect)
+                pygame.display.flip()
                 return  # начинаем игру
         pygame.display.flip()
         clock.tick(FPS)
@@ -147,8 +163,8 @@ class Camera:
 
 
 class Level:
-    def __init__(self):
-        self.level = load_level('map.txt')
+    def __init__(self, level_name):
+        self.level = load_level(level_name)
         self.player, self.level_x, self.level_y = generate_level(self.level)
 
         self.camera = Camera()
@@ -188,5 +204,8 @@ class Level:
 
 if __name__ == "__main__":
     start_screen()
-    level = Level()
+    with open("map.txt", mode="w", encoding="utf-8") as file:
+        for line in sys.stdin:
+            file.write(line)
+    level = Level("map.txt")
     level.run()
